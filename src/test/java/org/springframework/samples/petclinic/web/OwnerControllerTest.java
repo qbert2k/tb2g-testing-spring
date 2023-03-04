@@ -62,6 +62,19 @@ class OwnerControllerTest {
     }
 
     @Test
+    void testNewOwnerPostNotValid() throws Exception {
+        mockMvc.perform(post("/owners/new")
+                        .param("firstName", "Jimmy")
+                        .param("lastName", "Buffet")
+                        .param("city", "Key West"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeHasErrors("owner"))
+                .andExpect(model().attributeHasFieldErrors("owner", "address"))
+                .andExpect(model().attributeHasFieldErrors("owner", "telephone"))
+                .andExpect(view().name("owners/createOrUpdateOwnerForm"));
+    }
+
+    @Test
     void testFindByNameListOfOwners() throws Exception {
         given(clinicService.findOwnerByLastName(""))
                 .willReturn(Lists.newArrayList(new Owner(), new Owner()));
